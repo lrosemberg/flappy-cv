@@ -1,70 +1,79 @@
-// Configuration
-const board = {
-  width: 800,
-  height: 600,
-  canvas: undefined,
-  ctx: undefined
+class Board {
+  constructor (width, height, canvas) {
+    this.width  = width
+    this.height = height
+    this.canvas = canvas
+
+    this.canvas.height = this.height
+    this.canvas.width = this.width
+
+    this.context = this.canvas.getContext('2d')
+  }
+
+  drawCleanBoard () {
+    this.context.fillStyle = '#EEEEEE'
+    this.context.fillRect(0, 0, this.width, this.height)
+  }
 }
 
-const bird = {
-  width: 20,
-  height: 20,
-  x: 10,
-  y: (board.height / 2) - 10
+class Bird {
+  constructor (width, height, board) {
+    this.width = width
+    this.height = height
+    this.board = board
+
+    this.x = 10 // Initial x coordinate
+    this.y = (this.board.height / 2) - (this.x / 2)
+  }
+
+  draw () {
+    this.board.context.fillStyle = '#FF0000'
+    this.board.context.fillRect(this.x, this.y, this.width, this.height)
+  }
 }
 
-const pipe = {
-  height: board.height,
-  width: 40,
-  minPipeSize: board.height * 0.1,
-  openSpace: board.height * 0.3
-}
+class Pipes {
+  constructor (x, board) {
+    this.board = board
 
+    const width = 40
+    const height = this.board.height
+    const minSize = height * 0.1
+    const openSpace = height * 0.3
+
+    const minY = minSize
+    const maxY = this.board.height - minSize - openSpace
+    const randomY =  Math.floor(Math.random() * (maxY - minY + 1)) + minY
+
+    this.top = {
+      x: x,
+      y: randomY - height,
+      height: height,
+      width: width
+    }
+  
+    this.bottom = {
+      x: x,
+      y: randomY + openSpace,
+      height: height,
+      width: width
+    }
+  } 
+
+  draw () {
+    this.board.context.fillStyle = '#006600'
+    this.board.context.fillRect(this.top.x, this.top.y, this.top.width, this.top.height)
+    this.board.context.fillRect(this.bottom.x, this.bottom.y, this.bottom.width, this.bottom.height)
+  }
+}
 
 window.onload = function() {
-  board.canvas = document.getElementById('canvas')
-  board.canvas.height = board.height
-  board.canvas.width = board.width
-  board.ctx = board.canvas.getContext('2d')
+  const canvas = document.getElementById('canvas')
+  const board = new Board(800, 600, canvas)
+  const bird = new Bird(20, 20, board)
+  const pipes = new Pipes(50, board)
 
-  board.ctx.fillStyle = '#eee'
-  board.ctx.fillRect(0, 0, board.width, board.height)
-
-  board.ctx.fillStyle = 'red'
-  board.ctx.fillRect(bird.x, bird.y, bird.width, bird.height)
-
-  buildPipes()
-}
-
-function buildPipes () {
-  const newPipe = new Pipes(50)
-  newPipe.draw()
-}
-
-function Pipes (x) {
-  this.x = x || 0
-
-  const minY = pipe.minPipeSize
-  const maxY = board.height - pipe.minPipeSize - pipe.openSpace
-  const randomY =  Math.floor(Math.random() * (maxY - minY + 1)) + minY
-
-  this.top = {
-    x: this.x,
-    y: randomY - pipe.height,
-    height: pipe.height,
-    width: pipe.width
-  }
-
-  this.bottom = {
-    x: this.x,
-    y: randomY + pipe.openSpace,
-    height: pipe.height,
-    width: pipe.width
-  }
-
-  this.draw = function () {
-    board.ctx.fillStyle = 'green'
-    board.ctx.fillRect(this.top.x, this.top.y, this.top.width, this.top.height)
-    board.ctx.fillRect(this.bottom.x, this.bottom.y, this.bottom.width, this.bottom.height)
-  }
+  board.drawCleanBoard()
+  bird.draw()
+  pipes.draw()
 }
