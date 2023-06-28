@@ -4,8 +4,9 @@ class Board {
 
   #bird
   #canvas
-  #gameOver
+  #gameOver = true
   #pipesInterval
+  #animationRequest
 
   constructor (width, height, canvas) {
     this.width  = width
@@ -18,11 +19,16 @@ class Board {
     this.context = this.#canvas.getContext('2d')
 
     this.#bird = new Bird(20, 20, this)
+
+    this.#addEventListeners()
+    this.#drawCleanBoard()
   }
 
   startGame () {
-    this.#gameOver = false
+    this.#pipes = []
+    this.#bird.restart()
     this.#startPipes()
+    this.#gameOver = false
     this.#animate()
   }
 
@@ -48,7 +54,7 @@ class Board {
   #animate () {
     if (this.#gameOver) return
 
-    requestAnimationFrame(this.#animate.bind(this))
+    this.#animationRequest = requestAnimationFrame(this.#animate.bind(this))
     this.#drawCleanBoard()
 
     // Bird gravity simulation
@@ -68,6 +74,7 @@ class Board {
 
     if (this.#gameOver) {
       this.#stopPipes()
+      cancelAnimationFrame(this.#animationRequest)
       this.context.fillStyle = '#FF0000';
       this.context.font = '60px Arial'
       this.context.fillText('GAME OVER', (this.width / 2 - 190), (this.height / 2))
@@ -94,12 +101,22 @@ class Board {
 
     return false
   }
+
+  #addEventListeners () {
+    document.addEventListener('keydown', this.#newGameKeyPress.bind(this))
+  }
+
+  #newGameKeyPress (event) {
+    if (event.code === 'Space' && this.#gameOver) { 
+      this.startGame()
+    }
+  }
 }
 
 class Bird {
   x = 30  // Initial x coordinate
   #speedY = 0
-  #gravity = 0.3
+  #gravity = 0.2
 
   constructor (width, height, board) {
     this.width = width
@@ -130,6 +147,12 @@ class Bird {
   draw () {
     this.board.context.fillStyle = '#FF0000'
     this.board.context.fillRect(this.x, this.y, this.width, this.height)
+  }
+
+  restart () {
+    this.#speedY = 0
+    this.x = 30  // Initial x coordinate
+    this.y = (this.board.height / 2) - (this.x / 2)
   }
 }
 
@@ -171,5 +194,4 @@ class Pipes {
 window.onload = function() {
   const canvas = document.getElementById('canvas')
   const board = new Board(800, 600, canvas)
-  board.startGame()
 }
