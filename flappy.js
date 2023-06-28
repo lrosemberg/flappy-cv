@@ -18,7 +18,7 @@ class Board {
 
     this.context = this.#canvas.getContext('2d')
 
-    this.#bird = new Bird(20, 20, this)
+    this.#bird = new Bird(15, 15, this)
 
     this.#addEventListeners()
     this.#drawCleanBoard()
@@ -30,6 +30,13 @@ class Board {
     this.#startPipes()
     this.#gameOver = false
     this.#animate()
+  }
+
+  fly () {
+    if (this.#gameOver) {
+      this.startGame()
+    }
+    this.#bird.fly()
   }
 
   #drawCleanBoard () {
@@ -62,11 +69,11 @@ class Board {
     this.#bird.draw()
 
     // Pipes movement
-    this.#pipes.forEach(pipe => {
+    for (const pipe of this.#pipes) {
       pipe.top.x += this.#speedX
       pipe.bottom.x += this.#speedX
       pipe.draw()
-    })
+    }
 
     // Check Game Over
     this.#gameOver = this.#gameOver || this.#checkBoardCollision()
@@ -76,8 +83,8 @@ class Board {
       this.#stopPipes()
       cancelAnimationFrame(this.#animationRequest)
       this.context.fillStyle = '#FF0000';
-      this.context.font = '60px Arial'
-      this.context.fillText('GAME OVER', (this.width / 2 - 190), (this.height / 2))
+      this.context.font = '40px Arial'
+      this.context.fillText('GAME OVER', (this.width / 2 - 130), (this.height / 2))
     }
   }
 
@@ -116,7 +123,7 @@ class Board {
 class Bird {
   x = 30  // Initial x coordinate
   #speedY = 0
-  #gravity = 0.2
+  #gravity = 0.15
 
   constructor (width, height, board) {
     this.width = width
@@ -132,9 +139,13 @@ class Bird {
     document.addEventListener('keydown', this.move.bind(this))
   }
 
+  fly () {
+    this.#speedY = -4
+  }
+
   move (event) {
     if (event.code === 'Space') {
-      this.#speedY = -5
+      this.fly()
     }
   }
 
@@ -161,9 +172,11 @@ class Pipes {
     this.board = board
 
     const width = 40
-    const height = this.board.height
-    const minSize = height * 0.1
-    const openSpace = height * 0.3
+
+    const minSize = this.board.height * 0.1
+    const openSpace = this.board.height * 0.3
+
+    const height = this.board.height - minSize
 
     const minY = minSize
     const maxY = this.board.height - minSize - openSpace
@@ -191,7 +204,7 @@ class Pipes {
   }
 }
 
-window.onload = function() {
+window.addEventListener('load', function() {
   const canvas = document.getElementById('canvas')
-  const board = new Board(800, 600, canvas)
-}
+  window.board = new Board(300, 600, canvas)
+})
