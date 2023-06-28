@@ -45,10 +45,12 @@ class Board {
     requestAnimationFrame(this.#animate.bind(this))
     this.#drawCleanBoard()
 
+    // Bird gravity simulation
     this.#speedY += this.#gravity
     this.#bird.y += this.#speedY
     this.#bird.draw()
 
+    // Pipes movement
     this.#pipes.forEach(pipe => {
       pipe.top.x += this.#speedX
       pipe.bottom.x += this.#speedX
