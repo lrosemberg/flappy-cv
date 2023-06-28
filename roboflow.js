@@ -8,7 +8,7 @@ window.addEventListener('load', function () {
   }
 
   const video = document.getElementById('video')
-  const cameraMode = 'environment'
+  const cameraMode = 'user'
 
   const startVideoStreamPromise = navigator.mediaDevices
     .getUserMedia({
