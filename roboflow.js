@@ -8,13 +8,14 @@ window.addEventListener('load', function () {
   }
 
   const video = document.getElementById('video')
-  const cameraMode = 'user'
 
   const startVideoStreamPromise = navigator.mediaDevices
     .getUserMedia({
       audio: false,
       video: {
-        facingMode: cameraMode
+        facingMode: 'user',
+        width: 400,
+        height: 400
       }
     })
     .then(function (stream) {
