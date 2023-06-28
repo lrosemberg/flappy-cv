@@ -2,9 +2,14 @@ window.addEventListener('load', function () {
   let model
   let lastValidClass
 
+  // const VALID_CLASSES = {
+  //   'open-hands': 1,
+  //   'close-hands': 1
+  // }
+
   const VALID_CLASSES = {
-    'open-hands': 1,
-    'close-hands': 1
+    'Paper': 1,
+    'Rock': 1
   }
 
   const video = document.getElementById('video')
@@ -28,10 +33,17 @@ window.addEventListener('load', function () {
       })
     })
 
+  // const publishable_key = 'rf_pxexdAMNqIajRWhkdYplnip94zv1'
+  // const toLoad = {
+  //   model: 'hand-state-detector',
+  //   version: 3
+  // }
+
+  // Changing to use this model, its more accuracy: https://universe.roboflow.com/roboflow-58fyf/rock-paper-scissors-sxsw/model/11?webcam=true
   const publishable_key = 'rf_pxexdAMNqIajRWhkdYplnip94zv1'
   const toLoad = {
-    model: 'hand-state-detector',
-    version: 3
+    model: 'rock-paper-scissors-sxsw',
+    version: 11
   }
 
   const loadModelPromise = new Promise(function (resolve, reject) {
