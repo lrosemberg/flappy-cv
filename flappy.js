@@ -4,6 +4,7 @@ class Board {
 
   #bird
   #canvas
+  #gameOver
   #pipesInterval
 
   constructor (width, height, canvas) {
@@ -20,6 +21,7 @@ class Board {
   }
 
   startGame () {
+    this.#gameOver = false
     this.#startPipes()
     this.#animate()
   }
@@ -39,7 +41,13 @@ class Board {
     } , 1600)
   }
 
+  #stopPipes () {
+    clearInterval(this.#pipesInterval)
+  }
+
   #animate () {
+    if (this.#gameOver) return
+
     requestAnimationFrame(this.#animate.bind(this))
     this.#drawCleanBoard()
 
@@ -53,6 +61,18 @@ class Board {
       pipe.bottom.x += this.#speedX
       pipe.draw()
     })
+
+    // Check Game Over
+    this.#gameOver = this.#gameOver || this.#checkBoardCollision()
+
+    if (this.#gameOver) {
+      this.#stopPipes()
+      console.log('GAME OVER')
+    }
+  }
+
+  #checkBoardCollision () {
+    return this.#bird.y <= 0 || this.#bird.y >= this.height - this.#bird.height
   }
 }
 
