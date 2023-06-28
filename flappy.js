@@ -31,7 +31,10 @@ class Board {
 
   #startPipes () {
     this.#pipesInterval = setInterval(() => {
+      // Add new pipes
       this.#pipes.push(new Pipes(this))
+      
+      // Clear not visible pipes
       this.#pipes = this.#pipes.filter(pipe => pipe.top.x + pipe.top.width > 0)
     } , 1600)
   }
