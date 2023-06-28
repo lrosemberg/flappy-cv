@@ -1,28 +1,60 @@
 class Board {
+  #pipes = []
+  #speedX = -2
+
+  #bird
+  #canvas
+  #pipesInterval
+
   constructor (width, height, canvas) {
     this.width  = width
     this.height = height
-    this.canvas = canvas
 
-    this.canvas.height = this.height
-    this.canvas.width = this.width
+    this.#canvas = canvas
+    this.#canvas.height = this.height
+    this.#canvas.width = this.width
 
-    this.context = this.canvas.getContext('2d')
+    this.context = this.#canvas.getContext('2d')
+
+    this.#bird = new Bird(20, 20, this)
   }
 
-  drawCleanBoard () {
+  startGame () {
+    this.#startPipes()
+    this.#animate()
+  }
+
+  #drawCleanBoard () {
     this.context.fillStyle = '#EEEEEE'
     this.context.fillRect(0, 0, this.width, this.height)
+  }
+
+  #startPipes () {
+    this.#pipesInterval = setInterval(() => this.#pipes.push(new Pipes(this)), 1600)
+  }
+
+  #animate () {
+    requestAnimationFrame(this.#animate.bind(this))
+    this.#drawCleanBoard()
+
+    this.#bird.draw()
+
+    this.#pipes.forEach(pipe => {
+      pipe.top.x += this.#speedX
+      pipe.bottom.x += this.#speedX
+      pipe.draw()
+    })
   }
 }
 
 class Bird {
+  x = 10  // Initial x coordinate
+
   constructor (width, height, board) {
     this.width = width
     this.height = height
     this.board = board
 
-    this.x = 10 // Initial x coordinate
     this.y = (this.board.height / 2) - (this.x / 2)
   }
 
@@ -33,7 +65,7 @@ class Bird {
 }
 
 class Pipes {
-  constructor (x, board) {
+  constructor (board) {
     this.board = board
 
     const width = 40
@@ -46,14 +78,14 @@ class Pipes {
     const randomY =  Math.floor(Math.random() * (maxY - minY + 1)) + minY
 
     this.top = {
-      x: x,
+      x: this.board.width,
       y: randomY - height,
       height: height,
       width: width
     }
   
     this.bottom = {
-      x: x,
+      x: this.board.width,
       y: randomY + openSpace,
       height: height,
       width: width
@@ -70,10 +102,5 @@ class Pipes {
 window.onload = function() {
   const canvas = document.getElementById('canvas')
   const board = new Board(800, 600, canvas)
-  const bird = new Bird(20, 20, board)
-  const pipes = new Pipes(50, board)
-
-  board.drawCleanBoard()
-  bird.draw()
-  pipes.draw()
+  board.startGame()
 }
