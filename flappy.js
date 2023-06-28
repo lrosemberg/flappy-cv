@@ -64,6 +64,7 @@ class Board {
 
     // Check Game Over
     this.#gameOver = this.#gameOver || this.#checkBoardCollision()
+    this.#gameOver = this.#gameOver || this.#checkPipesCollision()
 
     if (this.#gameOver) {
       this.#stopPipes()
@@ -73,6 +74,23 @@ class Board {
 
   #checkBoardCollision () {
     return this.#bird.y <= 0 || this.#bird.y >= this.height - this.#bird.height
+  }
+
+  #checkPipesCollision () {
+    const bird = this.#bird
+
+    for (const pipeSet of this.#pipes) {
+      for (const pipe of [pipeSet.top, pipeSet.bottom]) {
+        if (bird.x + bird.width >= pipe.x &&    // bird right edge past pipe left
+            bird.x <= pipe.x + pipe.width &&    // bird left edge past pipe right
+            bird.y + bird.height >= pipe.y &&   // bird top edge past pipe bottom
+            bird.y <= pipe.y + pipe.height) {   // bird bottom edge past pipe top
+          return true
+        }
+      }
+    }
+
+    return false
   }
 }
 
