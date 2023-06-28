@@ -1,6 +1,7 @@
 class Board {
   #pipes = []
   #speedX = -2
+  #gravity = 4
 
   #bird
   #canvas
@@ -43,6 +44,7 @@ class Board {
     requestAnimationFrame(this.#animate.bind(this))
     this.#drawCleanBoard()
 
+    this.#bird.y += this.#gravity
     this.#bird.draw()
 
     this.#pipes.forEach(pipe => {
