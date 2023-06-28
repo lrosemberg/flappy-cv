@@ -1,8 +1,6 @@
 class Board {
   #pipes = []
   #speedX = -2
-  #speedY = 0
-  #gravity = 0.3
 
   #bird
   #canvas
@@ -46,8 +44,7 @@ class Board {
     this.#drawCleanBoard()
 
     // Bird gravity simulation
-    this.#speedY += this.#gravity
-    this.#bird.y += this.#speedY
+    this.#bird.simulateGravity()
     this.#bird.draw()
 
     // Pipes movement
@@ -61,6 +58,8 @@ class Board {
 
 class Bird {
   x = 10  // Initial x coordinate
+  #speedY = 0
+  #gravity = 0.3
 
   constructor (width, height, board) {
     this.width = width
@@ -68,6 +67,23 @@ class Bird {
     this.board = board
 
     this.y = (this.board.height / 2) - (this.x / 2)
+
+    this.#addEventListeners()
+  }
+
+  #addEventListeners () {
+    document.addEventListener('keydown', this.move.bind(this))
+  }
+
+  move (event) {
+    if (event.code === 'Space') {
+      this.#speedY = -5
+    }
+  }
+
+  simulateGravity () {
+    this.#speedY += this.#gravity
+    this.y += this.#speedY
   }
 
   draw () {
