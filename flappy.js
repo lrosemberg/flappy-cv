@@ -68,7 +68,9 @@ class Board {
 
     if (this.#gameOver) {
       this.#stopPipes()
-      console.log('GAME OVER')
+      this.context.fillStyle = '#FF0000';
+      this.context.font = '60px Arial'
+      this.context.fillText('GAME OVER', (this.width / 2 - 190), (this.height / 2))
     }
   }
 
