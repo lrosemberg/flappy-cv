@@ -57,7 +57,7 @@ class Board {
 }
 
 class Bird {
-  x = 10  // Initial x coordinate
+  x = 30  // Initial x coordinate
   #speedY = 0
   #gravity = 0.3
 
@@ -83,7 +83,8 @@ class Bird {
 
   simulateGravity () {
     this.#speedY += this.#gravity
-    this.y += this.#speedY
+    this.y = Math.max(this.y + this.#speedY, 0)
+    this.y = Math.min(this.board.height - this.height, this.y)
   }
 
   draw () {
