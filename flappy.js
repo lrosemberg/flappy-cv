@@ -30,7 +30,10 @@ class Board {
   }
 
   #startPipes () {
-    this.#pipesInterval = setInterval(() => this.#pipes.push(new Pipes(this)), 1600)
+    this.#pipesInterval = setInterval(() => {
+      this.#pipes.push(new Pipes(this))
+      this.#pipes = this.#pipes.filter(pipe => pipe.top.x + pipe.top.width > 0)
+    } , 1600)
   }
 
   #animate () {
